@@ -2,7 +2,10 @@
 <html lang="ko" class="theme-dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>💍 운정의 반지: 중간계 파주의 전설</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -16,6 +19,8 @@
             --neon-yellow: #ffff00;
             --neon-green: #00ff00;
             --neon-orange: #ff6600;
+            --neon-pink: #ff69b4;
+            --neon-purple: #9966ff;
             --dark-bg: #0a0a0f;
             --darker-bg: #050508;
             --text-overlay: rgba(0, 0, 0, 0.8);
@@ -29,6 +34,12 @@
             box-sizing: border-box;
         }
 
+        html {
+            overflow-x: hidden;
+            width: 100%;
+            height: 100%;
+        }
+
         body {
             font-family: 'Segoe UI', 'Noto Sans KR', sans-serif;
             background: var(--dark-bg);
@@ -36,6 +47,9 @@
             overflow-x: hidden;
             line-height: 1.6;
             font-size: 1.125rem;
+            width: 100%;
+            min-height: 100vh;
+            position: relative;
         }
 
         /* Background texture */
@@ -74,63 +88,201 @@
             pointer-events: none;
         }
 
-        /* Wire frame icons */
-        .wire-icon {
+        /* Mobile Navigation */
+        .mobile-nav {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: none;
+        }
+
+        .mobile-nav-toggle {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neon-cyan);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px var(--neon-cyan);
+        }
+
+        .mobile-nav-menu {
             position: absolute;
-            width: 60px;
-            height: 60px;
-            opacity: 0.3;
-            animation: wireRotate 8s linear infinite;
+            top: 60px;
+            right: 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 1rem;
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav-menu.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .mobile-nav-menu a {
+            display: block;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: color 0.3s ease;
+        }
+
+        .mobile-nav-menu a:last-child {
+            border-bottom: none;
+        }
+
+        .mobile-nav-menu a:hover {
+            color: var(--neon-cyan);
+        }
+
+        /* Desktop Navigation */
+        .desktop-nav {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 0.5rem 2rem;
+        }
+
+        .desktop-nav ul {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .desktop-nav a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .desktop-nav a:hover {
+            color: var(--neon-cyan);
+        }
+
+        /* Rotating emoji wire icons */
+        .rotating-emoji {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.4;
+            animation: rotateEmoji 4s linear infinite;
             pointer-events: none;
-            z-index: 1;
+            z-index: 1000;
+            text-shadow: 0 0 15px currentColor, 0 0 30px currentColor;
         }
 
-        .wire-icon.small {
-            width: 40px;
-            height: 40px;
+        .rotating-emoji.small {
+            font-size: 1.5rem;
+            animation-duration: 3s;
+            opacity: 0.35;
+        }
+
+        .rotating-emoji.large {
+            font-size: 3rem;
             animation-duration: 6s;
+            opacity: 0.45;
         }
 
-        .wire-icon.large {
-            width: 80px;
-            height: 80px;
-            animation-duration: 10s;
+        .rotating-emoji.reverse {
+            animation-direction: reverse;
         }
 
-        @keyframes wireRotate {
+        @keyframes rotateEmoji {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
 
-        /* Wire frame SVG icons */
-        .wire-bow {
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M20 50 Q50 20 80 50 Q50 80 20 50" stroke="%2300ffff" stroke-width="2" fill="none"/><line x1="20" y1="50" x2="80" y2="50" stroke="%2300ffff" stroke-width="1"/><circle cx="20" cy="50" r="3" fill="%2300ffff"/><circle cx="80" cy="50" r="3" fill="%2300ffff"/></svg>') no-repeat center;
-            background-size: contain;
+        .floating-emoji {
+            position: absolute;
+            font-size: 1.5rem;
+            animation: floatEmoji 5s ease-in-out infinite;
+            opacity: 0.4;
+            pointer-events: none;
+            z-index: 1000;
+            text-shadow: 0 0 12px currentColor, 0 0 24px currentColor;
         }
 
-        .wire-ring {
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="30" stroke="%23ffff00" stroke-width="3" fill="none"/><circle cx="50" cy="50" r="20" stroke="%23ffff00" stroke-width="2" fill="none"/><circle cx="50" cy="50" r="10" stroke="%23ffff00" stroke-width="1" fill="none"/></svg>') no-repeat center;
-            background-size: contain;
+        @keyframes floatEmoji {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-30px) scale(1.2); }
         }
 
-        .wire-sword {
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><line x1="50" y1="10" x2="50" y2="70" stroke="%23ff00ff" stroke-width="3"/><rect x="45" y="70" width="10" height="8" stroke="%23ff00ff" stroke-width="2" fill="none"/><line x1="40" y1="78" x2="60" y2="78" stroke="%23ff00ff" stroke-width="3"/><circle cx="50" cy="85" r="5" stroke="%23ff00ff" stroke-width="2" fill="none"/></svg>') no-repeat center;
-            background-size: contain;
+        /* Particles Animation */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1;
         }
 
-        .wire-crown {
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M20 60 L30 40 L40 50 L50 30 L60 50 L70 40 L80 60 L20 60" stroke="%23ff6600" stroke-width="2" fill="none"/><circle cx="30" cy="40" r="3" fill="%23ff6600"/><circle cx="50" cy="30" r="4" fill="%23ff6600"/><circle cx="70" cy="40" r="3" fill="%23ff6600"/></svg>') no-repeat center;
-            background-size: contain;
+        .particle {
+            position: absolute;
+            background: rgba(0, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: float 10s infinite linear;
         }
 
-        .wire-shield {
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50 20 L70 30 L70 60 Q70 80 50 85 Q30 80 30 60 L30 30 Z" stroke="%2300ff00" stroke-width="2" fill="none"/><line x1="50" y1="30" x2="50" y2="70" stroke="%2300ff00" stroke-width="1"/><line x1="35" y1="45" x2="65" y2="45" stroke="%2300ff00" stroke-width="1"/></svg>') no-repeat center;
-            background-size: contain;
+        .particle:nth-child(2n) {
+            background: rgba(255, 0, 255, 0.4);
         }
 
-        .wire-magic {
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="25" stroke="%23ff00ff" stroke-width="2" fill="none"/><path d="M35 35 L65 65 M65 35 L35 65" stroke="%23ff00ff" stroke-width="2"/><circle cx="50" cy="50" r="8" stroke="%23ff00ff" stroke-width="1" fill="none"/></svg>') no-repeat center;
-            background-size: contain;
+        .particle:nth-child(3n) {
+            background: rgba(255, 255, 0, 0.5);
+        }
+
+        .particle:nth-child(4n) {
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px);
+                opacity: 0;
+            }
         }
 
         /* Text overlay for readability */
@@ -141,6 +293,11 @@
             padding: 2rem;
             margin: 1rem 0;
             position: relative;
+            z-index: 10;
+            width: 100%;
+            box-sizing: border-box;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         /* Hero Section */
@@ -151,11 +308,13 @@
             justify-content: center;
             text-align: center;
             position: relative;
+            overflow: hidden;
             background: 
                 linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
                 url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600"><rect fill="%23000a0f" width="1000" height="600"/><polygon fill="%23001122" points="0,600 200,400 400,500 600,300 800,450 1000,200 1000,600"/></svg>');
             background-size: cover;
             background-position: center;
+            width: 100%;
         }
 
         .hero-title {
@@ -318,6 +477,8 @@
             align-items: center;
             padding: 4rem 0;
             position: relative;
+            overflow: hidden;
+            width: 100%;
         }
 
         .story-card {
@@ -332,6 +493,8 @@
                 inset 0 1px 0 rgba(255, 255, 255, 0.1);
             position: relative;
             overflow: hidden;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .story-card::before {
@@ -515,11 +678,14 @@
             align-items: center;
             gap: 2rem;
             flex-wrap: wrap;
+            width: 100%;
         }
 
         .character-text {
             flex: 1;
             min-width: 300px;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .alliance-items {
@@ -613,31 +779,97 @@
 
         /* Responsive design */
         @media (max-width: 768px) {
-            .hero-title {
-                font-size: 2.5rem;
+            html {
+                -webkit-text-size-adjust: 100%;
+                -ms-text-size-adjust: 100%;
             }
             
-            .character-name {
-                font-size: 2rem;
+            body {
+                font-size: 1rem;
+                -webkit-overflow-scrolling: touch;
+                padding: 0;
+                margin: 0;
             }
             
-            .character-image {
-                width: 150px;
-                height: 150px;
+            .container {
+                padding: 0 1rem;
+                max-width: 100%;
+                margin: 0;
+            }
+            
+            .story-card {
+                padding: 1.5rem;
+                margin: 1rem 0;
+                border-radius: 15px;
+                width: 100%;
+                box-sizing: border-box;
+            }
+            
+            .text-overlay {
+                padding: 1.5rem;
+                margin: 0.5rem 0;
+                border-radius: 12px;
+                width: 100%;
+                box-sizing: border-box;
             }
             
             .character-content {
                 flex-direction: column;
                 text-align: center;
+                gap: 1rem;
+                width: 100%;
             }
             
-            .story-card {
-                padding: 2rem;
+            .character-text {
+                min-width: unset;
+                width: 100%;
+                flex: none;
+            }
+            
+            .character-name {
+                font-size: 1.8rem;
+                line-height: 1.2;
+                margin-bottom: 1rem;
+                word-wrap: break-word;
+            }
+            
+            .character-story {
+                font-size: 1rem;
+                line-height: 1.6;
+                text-align: left;
+            }
+            
+            .character-story p {
+                margin-bottom: 1rem;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+                hyphens: auto;
+                -webkit-hyphens: auto;
+                -ms-hyphens: auto;
+            }
+            
+            .desktop-nav {
+                display: none;
+            }
+            
+            .mobile-nav {
+                display: block;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .character-image {
+                width: 150px;
+                height: 150px;
+                margin: 1rem auto;
             }
             
             .characters-grid {
                 grid-template-columns: 1fr;
                 gap: 2rem;
+                padding: 0 1rem;
             }
             
             .character-intro-image {
@@ -645,10 +877,94 @@
                 height: 120px;
             }
             
-            .wire-icon {
-                width: 40px;
-                height: 40px;
+            .rotating-emoji {
+                font-size: 1.5rem;
             }
+            
+            .rotating-emoji.large {
+                font-size: 2rem;
+            }
+            
+            .hero-section {
+                height: 100vh;
+                padding: 2rem 1rem;
+            }
+            
+            .story-section {
+                padding: 3rem 0.5rem;
+                min-height: auto;
+            }
+        }
+
+        /* 추가 모바일 최적화 */
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 0.5rem;
+            }
+            
+            .story-card {
+                padding: 1rem;
+                margin: 0.5rem 0;
+            }
+            
+            .text-overlay {
+                padding: 1rem;
+                margin: 0.5rem 0;
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+                line-height: 1.1;
+            }
+            
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+            
+            .character-name {
+                font-size: 1.5rem;
+            }
+            
+            .character-story {
+                font-size: 0.9rem;
+            }
+            
+            .rotating-emoji {
+                font-size: 1.2rem;
+            }
+            
+            .rotating-emoji.large {
+                font-size: 1.8rem;
+            }
+            
+            .story-section {
+                padding: 2rem 0.25rem;
+            }
+        }
+
+        /* iPhone X 이상 노치 대응 */
+        @media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3),
+               only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2),
+               only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+            .container {
+                padding: 0 env(safe-area-inset-left, 1rem) 0 env(safe-area-inset-right, 1rem);
+            }
+            
+            .story-section {
+                padding-left: env(safe-area-inset-left, 0.5rem);
+                padding-right: env(safe-area-inset-right, 0.5rem);
+            }
+        }
+
+        /* 뷰포트 고정 */
+        @viewport {
+            width: device-width;
+            zoom: 1.0;
+        }
+
+        /* iOS Safari 줌 방지 */
+        input, select, textarea {
+            font-size: 16px;
         }
 
         /* Glitch effect */
@@ -742,29 +1058,61 @@
     </style>
 </head>
 <body>
-    <!-- Wire frame icons scattered throughout -->
-    <div class="wire-icon wire-bow" style="top: 10%; left: 5%;"></div>
-    <div class="wire-icon wire-ring small" style="top: 20%; right: 10%;"></div>
-    <div class="wire-icon wire-sword large" style="bottom: 15%; left: 8%;"></div>
-    <div class="wire-icon wire-crown" style="top: 30%; left: 15%;"></div>
-    <div class="wire-icon wire-shield" style="top: 60%; right: 20%;"></div>
-    <div class="wire-icon wire-magic" style="bottom: 25%; left: 25%;"></div>
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav">
+        <div class="mobile-nav-toggle" onclick="toggleMobileMenu()">
+            ☰
+        </div>
+        <div class="mobile-nav-menu" id="mobileMenu">
+            <a href="#hero">🏠 Home</a>
+            <a href="#characters">👥 Characters</a>
+            <a href="#chapter1">🏹 Chapter 1</a>
+            <a href="#chapter2">💍 Chapter 2</a>
+            <a href="#chapter3">⚔️ Chapter 3</a>
+            <a href="#chapter4">🌟 Chapter 4</a>
+            <a href="#chapter5">🔥 Chapter 5</a>
+            <a href="#ending">🌌 Ending</a>
+        </div>
+    </div>
+
+    <!-- Desktop Navigation -->
+    <nav class="desktop-nav">
+        <ul>
+            <li><a href="#hero">🏠 Home</a></li>
+            <li><a href="#characters">👥 Characters</a></li>
+            <li><a href="#chapter1">🏹 Chapter 1</a></li>
+            <li><a href="#chapter2">💍 Chapter 2</a></li>
+            <li><a href="#chapter3">⚔️ Chapter 3</a></li>
+            <li><a href="#chapter4">🌟 Chapter 4</a></li>
+            <li><a href="#chapter5">🔥 Chapter 5</a></li>
+            <li><a href="#ending">🌌 Ending</a></li>
+        </ul>
+    </nav>
+
+    <!-- Rotating emoji wire icons scattered throughout -->
+    <div class="rotating-emoji" style="top: 10%; left: 5%;">🏹</div>
+    <div class="rotating-emoji small reverse" style="top: 20%; right: 10%;">💍</div>
+    <div class="floating-emoji" style="top: 30%; left: 15%;">⚔️</div>
+    <div class="rotating-emoji large" style="bottom: 20%; right: 5%;">🌟</div>
+    <div class="floating-emoji" style="bottom: 10%; left: 25%;">✨</div>
 
     <!-- Hero Section -->
-    <section class="hero-section">
+    <section id="hero" class="hero-section">
+        <div class="particles"></div>
         <div class="container">
             <h1 class="hero-title glitch" data-text="💍 운정의 반지: 중간계 파주의 전설">💍 운정의 반지: 중간계 파주의 전설</h1>
             <p class="hero-subtitle">세 명의 용사가 펼치는 장대한 모험의 서막</p>
         </div>
         <div class="scroll-indicator">⬇️</div>
         
-        <!-- More wire icons for hero -->
-        <div class="wire-icon wire-ring" style="top: 15%; right: 15%;"></div>
-        <div class="wire-icon wire-bow small" style="bottom: 20%; right: 25%;"></div>
+        <!-- Hero specific rotating effects -->
+        <div class="rotating-emoji reverse" style="top: 25%; right: 15%;">🏹</div>
+        <div class="rotating-emoji small" style="bottom: 30%; left: 20%;">💍</div>
+        <div class="floating-emoji" style="top: 40%; right: 25%;">⚔️</div>
     </section>
 
     <!-- Characters Introduction Section -->
-    <section class="characters-intro">
+    <section id="characters" class="characters-intro">
         <div class="container">
             <h2 class="characters-title">등장인물 소개 - 인.창.규</h2>
             <div class="characters-grid">
@@ -800,14 +1148,14 @@
             </div>
         </div>
         
-        <!-- More wire icons -->
-        <div class="wire-icon wire-bow" style="top: 25%; left: 10%;"></div>
-        <div class="wire-icon wire-crown large" style="bottom: 30%; left: 15%;"></div>
-        <div class="wire-icon wire-magic" style="top: 50%; right: 15%;"></div>
+        <!-- Characters specific rotating emojis -->
+        <div class="rotating-emoji" style="top: 25%; left: 10%;">👥</div>
+        <div class="floating-emoji" style="bottom: 20%; right: 15%;">🧝‍♂️</div>
+        <div class="rotating-emoji small reverse" style="top: 15%; right: 20%;">👑</div>
     </section>
 
     <!-- Chapter 1: 엘프 인준의 각성 -->
-    <section class="story-section lightning-section">
+    <section id="chapter1" class="story-section lightning-section">
         <div class="container">
             <div class="story-card">
                 <div class="character-content">
@@ -836,13 +1184,14 @@
             </div>
         </div>
         
-        <!-- Wire icons for this section -->
-        <div class="wire-icon wire-bow small" style="top: 10%; right: 5%;"></div>
-        <div class="wire-icon wire-magic" style="bottom: 20%; left: 10%;"></div>
+        <!-- Chapter 1 specific rotating emojis -->
+        <div class="rotating-emoji small" style="top: 15%; right: 10%;">🏹</div>
+        <div class="floating-emoji" style="bottom: 25%; left: 15%;">🌲</div>
+        <div class="rotating-emoji reverse" style="top: 50%; left: 5%;">✨</div>
     </section>
 
     <!-- Chapter 2: 호빗 찬규의 운명 -->
-    <section class="story-section fire-section">
+    <section id="chapter2" class="story-section fire-section">
         <div class="container">
             <div class="story-card">
                 <div class="character-content">
@@ -873,13 +1222,14 @@
             </div>
         </div>
         
-        <!-- Wire icons for this section -->
-        <div class="wire-icon wire-ring" style="top: 20%; left: 15%;"></div>
-        <div class="wire-icon wire-shield large" style="bottom: 10%; right: 20%;"></div>
+        <!-- Chapter 2 specific rotating emojis -->
+        <div class="rotating-emoji" style="top: 20%; left: 15%;">💍</div>
+        <div class="floating-emoji" style="bottom: 30%; right: 20%;">🏠</div>
+        <div class="rotating-emoji small reverse" style="top: 60%; right: 10%;">👁️</div>
     </section>
 
     <!-- Chapter 3: 곤도르의 왕 창구 -->
-    <section class="story-section phoenix-section">
+    <section id="chapter3" class="story-section phoenix-section">
         <div class="container">
             <div class="story-card">
                 <div class="character-content">
@@ -906,13 +1256,14 @@
             </div>
         </div>
         
-        <!-- Wire icons for this section */
-        <div class="wire-icon wire-sword small" style="top: 30%; right: 10%;"></div>
-        <div class="wire-icon wire-crown" style="top: 15%; left: 20%;"></div>
+        <!-- Chapter 3 specific rotating emojis -->
+        <div class="rotating-emoji reverse" style="top: 15%; right: 10%;">⚔️</div>
+        <div class="floating-emoji" style="top: 50%; left: 5%;">🏛️</div>
+        <div class="rotating-emoji small" style="bottom: 20%; right: 25%;">👑</div>
     </section>
 
     <!-- Chapter 4: 운정 원정대의 결성 -->
-    <section class="story-section alliance-section">
+    <section id="chapter4" class="story-section alliance-section">
         <div class="container">
             <div class="story-card">
                 <div class="character-content">
@@ -946,15 +1297,15 @@
             </div>
         </div>
         
-        <!-- Wire icons for this section */
-        <div class="wire-icon wire-magic" style="top: 5%; left: 25%;"></div>
-        <div class="wire-icon wire-shield large" style="bottom: 25%; left: 30%;"></div>
-        <div class="wire-icon wire-bow" style="top: 50%; right: 15%;"></div>
-        <div class="wire-icon wire-ring" style="bottom: 30%; left: 20%;"></div>
+        <!-- Chapter 4 specific rotating emojis -->
+        <div class="rotating-emoji" style="top: 5%; left: 25%;">🌟</div>
+        <div class="floating-emoji" style="bottom: 25%; left: 30%;">🧙‍♂️</div>
+        <div class="rotating-emoji small reverse" style="top: 50%; right: 15%;">🗺️</div>
+        <div class="floating-emoji" style="bottom: 30%; left: 20%;">🤝</div>
     </section>
 
     <!-- Chapter 5: 첫 번째 시련 -->
-    <section class="story-section lightning-section">
+    <section id="chapter5" class="story-section lightning-section">
         <div class="container">
             <div class="story-card">
                 <div class="character-content">
@@ -985,13 +1336,14 @@
             </div>
         </div>
         
-        <!-- Wire icons for this section */
-        <div class="wire-icon wire-sword small" style="top: 40%; left: 5%;"></div>
-        <div class="wire-icon wire-magic" style="bottom: 35%; right: 10%;"></div>
+        <!-- Chapter 5 specific rotating emojis -->
+        <div class="rotating-emoji small" style="top: 40%; left: 5%;">🔥</div>
+        <div class="floating-emoji" style="bottom: 35%; right: 10%;">⚡</div>
+        <div class="rotating-emoji reverse" style="top: 20%; right: 15%;">💥</div>
     </section>
 
     <!-- Ending Section -->
-    <section class="ending-section">
+    <section id="ending" class="ending-section">
         <div class="container">
             <div class="ending-content">
                 <h2 class="character-name">🏔️ To Be Continued...</h2>
@@ -1000,11 +1352,10 @@
             </div>
         </div>
         
-        <!-- Final wire icons -->
-        <div class="wire-icon wire-crown large" style="top: 20%; left: 10%;"></div>
-        <div class="wire-icon wire-ring" style="bottom: 20%; right: 15%;"></div>
-        <div class="wire-icon wire-bow" style="top: 30%; right: 25%;"></div>
-        <div class="wire-icon wire-shield" style="bottom: 30%; left: 20%;"></div>
+        <!-- Final rotating effects -->
+        <div class="rotating-emoji large" style="top: 20%; left: 10%;">🌌</div>
+        <div class="floating-emoji" style="bottom: 30%; right: 15%;">⭐</div>
+        <div class="rotating-emoji reverse" style="top: 60%; right: 15%;">✨</div>
     </section>
 
     <!-- Bootstrap JS -->
@@ -1014,10 +1365,63 @@
         // Initialize GSAP and ScrollTrigger
         gsap.registerPlugin(ScrollTrigger);
 
+        // Create particles for hero section only
+        function createParticles() {
+            const particlesContainer = document.querySelector('.particles');
+            if (!particlesContainer) return;
+            
+            const particleCount = 20;
+            
+            // 기존 파티클 제거
+            particlesContainer.innerHTML = '';
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.width = particle.style.height = Math.random() * 4 + 2 + 'px';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // 화면 크기 변경 시 파티클 재생성
+        function handleResize() {
+            clearTimeout(window.resizeTimeout);
+            window.resizeTimeout = setTimeout(() => {
+                createParticles();
+            }, 250);
+        }
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('active');
+        }
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(e) {
+            const nav = document.querySelector('.mobile-nav');
+            const menu = document.getElementById('mobileMenu');
+            if (!nav.contains(e.target)) {
+                menu.classList.remove('active');
+            }
+        });
+
         // Initialize animations when page loads
         window.addEventListener('load', function() {
+            createParticles();
             initAnimations();
             startTypingEffect();
+        });
+
+        // 화면 크기 변경 및 방향 전환 감지
+        window.addEventListener('resize', handleResize);
+        window.addEventListener('orientationchange', function() {
+            setTimeout(() => {
+                createParticles();
+            }, 500);
         });
 
         function initAnimations() {
@@ -1152,7 +1556,9 @@
 다음 편에서는 문산의 오크 군대와의 대결, 
 그리고 신비로운 동료들과의 만남이 기다리고 있다!
 
-운정 원정대의 모험은 계속된다...`;
+운정 원정대의 모험은 계속된다...
+
+Made with epic adventure and friendship 🏹💍⚔️`;
 
             const typingElement = document.getElementById('typing-text');
             let i = 0;
@@ -1233,7 +1639,7 @@
                     });
                     
                 } else if (section.classList.contains('fire-section')) {
-                    // Fire effect for 창구
+                    // Fire effect for 찬규
                     gsap.to(this, {
                         scale: 1.3,
                         duration: 0.6,
@@ -1296,7 +1702,6 @@
                         border-radius: 50%;
                         pointer-events: none;
                         z-index: 9999;
-                        transform: translate(-50%, -50%);
                     `;
                     
                     this.parentElement.appendChild(glow);
@@ -1357,18 +1762,19 @@
             });
         });
 
-        // Wire icon click effects
-        document.querySelectorAll('.wire-icon').forEach((icon, index) => {
-            icon.addEventListener('click', function() {
-                gsap.to(this, {
-                    scale: 1.5,
-                    rotation: 720,
-                    duration: 1,
-                    ease: "back.out(1.7)",
-                    onComplete: () => {
-                        gsap.to(this, { scale: 1, rotation: 0, duration: 0.5 });
-                    }
-                });
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    // Close mobile menu if open
+                    document.getElementById('mobileMenu').classList.remove('active');
+                }
             });
         });
 
@@ -1400,10 +1806,6 @@
                 50% { filter: hue-rotate(180deg) contrast(2) brightness(1.5); }
                 75% { filter: hue-rotate(270deg) contrast(1.5) brightness(1.2); }
                 100% { filter: hue-rotate(360deg) contrast(1) brightness(1); }
-            }
-            @keyframes pulse {
-                0%, 100% { opacity: 0.5; transform: scale(1); }
-                50% { opacity: 1; transform: scale(1.1); }
             }
         `;
         document.head.appendChild(style);
