@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="ko" class="theme-dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💍 운정의 반지: 중간계 파주의 전설</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        :root {
+            --neon-cyan: #00ffff;
+            --neon-magenta: #ff00ff;
+            --neon-yellow: #ffff00;
+            --neon-green: #00ff00;
+            --neon-orange: #ff6600;
+            --dark-bg: #0a0a0f;
+            --darker-bg: #050508;
+            --text-overlay: rgba(0, 0, 0, 0.8);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Noto Sans KR', sans-serif;
+            background: var(--dark-bg);
+            color: #ffffff;
+            overflow-x: hidden;
+            line-height: 1.6;
+            font-size: 1.125rem;
+        }
+
+        /* Background texture */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 0, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(255, 255, 0, 0.05) 0%, transparent 70%),
+                linear-gradient(135deg, var(--dark-bg) 0%, var(--darker-bg) 100%);
+            z-index: -2;
+        }
+
+        /* Grain texture */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(255, 255, 255, 0.01) 2px,
+                    rgba(255, 255, 255, 0.01) 4px
+                );
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Wire frame icons */
+        .wire-icon {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            opacity: 0.3;
+            animation: wireRotate 8s linear infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .wire-icon.small {
+            width: 40px;
+            height: 40px;
+            animation-duration: 6s;
+        }
+
+        .wire-icon.large {
+            width: 80px;
+            height: 80px;
+            animation-duration: 10s;
+        }
+
+        @keyframes wireRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Wire frame SVG icons */
+        .wire-bow {
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M20 50 Q50 20 80 50 Q50 80 20 50" stroke="%2300ffff" stroke-width="2" fill="none"/><line x1="20" y1="50" x2="80" y2="50" stroke="%2300ffff" stroke-width="1"/><circle cx="20" cy="50" r="3" fill="%2300ffff"/><circle cx="80" cy="50" r="3" fill="%2300ffff"/></svg>') no-repeat center;
+            background-size: contain;
+        }
+
+        .wire-ring {
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="30" stroke="%23ffff00" stroke-width="3" fill="none"/><circle cx="50" cy="50" r="20" stroke="%23ffff00" stroke-width="2" fill="none"/><circle cx="50" cy="50" r="10" stroke="%23ffff00" stroke-width="1" fill="none"/></svg>') no-repeat center;
+            background-size: contain;
+        }
+
+        .wire-sword {
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><line x1="50" y1="10" x2="50" y2="70" stroke="%23ff00ff" stroke-width="3"/><rect x="45" y="70" width="10" height="8" stroke="%23ff00ff" stroke-width="2" fill="none"/><line x1="40" y1="78" x2="60" y2="78" stroke="%23ff00ff" stroke-width="3"/><circle cx="50" cy="85" r="5" stroke="%23ff00ff" stroke-width="2" fill="none"/></svg>') no-repeat center;
+            background-size: contain;
+        }
+
+        .wire-crown {
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M20 60 L30 40 L40 50 L50 30 L60 50 L70 40 L80 60 L20 60" stroke="%23ff6600" stroke-width="2" fill="none"/><circle cx="30" cy="40" r="3" fill="%23ff6600"/><circle cx="50" cy="30" r="4" fill="%23ff6600"/><circle cx="70" cy="40" r="3" fill="%23ff6600"/></svg>') no-repeat center;
+            background-size: contain;
+        }
+
+        .wire-shield {
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50 20 L70 30 L70 60 Q70 80 50 85 Q30 80 30 60 L30 30 Z" stroke="%2300ff00" stroke-width="2" fill="none"/><line x1="50" y1="30" x2="50" y2="70" stroke="%2300ff00" stroke-width="1"/><line x1="35" y1="45" x2="65" y2="45" stroke="%2300ff00" stroke-width="1"/></svg>') no-repeat center;
+            background-size: contain;
+        }
+
+        .wire-magic {
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="25" stroke="%23ff00ff" stroke-width="2" fill="none"/><path d="M35 35 L65 65 M65 35 L35 65" stroke="%23ff00ff" stroke-width="2"/><circle cx="50" cy="50" r="8" stroke="%23ff00ff" stroke-width="1" fill="none"/></svg>') no-repeat center;
+            background-size: contain;
+        }
+
+        /* Text overlay for readability */
+        .text-overlay {
+            background: var(--text-overlay);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            background: 
+                linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600"><rect fill="%23000a0f" width="1000" height="600"/><polygon fill="%23001122" points="0,600 200,400 400,500 600,300 800,450 1000,200 1000,600"/></svg>');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .hero-title {
+            font-size: clamp(2rem, 6vw, 4rem);
+            font-weight: 900;
+            margin-bottom: 1rem;
+            text-shadow: 
+                0 0 10px var(--neon-yellow),
+                0 0 20px var(--neon-yellow),
+                0 0 40px var(--neon-yellow);
+            animation: ringGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes ringGlow {
+            from { 
+                text-shadow: 
+                    0 0 10px var(--neon-yellow),
+                    0 0 20px var(--neon-yellow),
+                    0 0 40px var(--neon-yellow);
+            }
+            to { 
+                text-shadow: 
+                    0 0 5px var(--neon-yellow),
+                    0 0 10px var(--neon-yellow),
+                    0 0 20px var(--neon-yellow),
+                    0 0 40px var(--neon-orange);
+            }
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            color: var(--neon-cyan);
+        }
+
+        /* Characters Introduction Section */
+        .characters-intro {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 4rem 0;
+            position: relative;
+            background: 
+                radial-gradient(circle at 25% 25%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(255, 0, 255, 0.1) 0%, transparent 50%);
+        }
+
+        .characters-title {
+            font-size: 3rem;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 3rem;
+            background: linear-gradient(45deg, var(--neon-cyan), var(--neon-magenta), var(--neon-yellow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+        }
+
+        .characters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .character-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .character-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .character-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--text-overlay);
+            z-index: -1;
+        }
+
+        .character-intro-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 1rem;
+            display: block;
+            border: 3px solid var(--neon-cyan);
+            box-shadow: 0 0 20px var(--neon-cyan);
+            transition: all 0.3s ease;
+        }
+
+        .character-intro-image.elf {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 20px var(--neon-cyan);
+        }
+
+        .character-intro-image.hobbit {
+            border-color: var(--neon-yellow);
+            box-shadow: 0 0 20px var(--neon-yellow);
+        }
+
+        .character-intro-image.ranger {
+            border-color: var(--neon-magenta);
+            box-shadow: 0 0 20px var(--neon-magenta);
+        }
+
+        .character-intro-name {
+            font-size: 1.5rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            color: var(--neon-cyan);
+        }
+
+        .character-intro-name.elf {
+            color: var(--neon-cyan);
+        }
+
+        .character-intro-name.hobbit {
+            color: var(--neon-yellow);
+        }
+
+        .character-intro-name.ranger {
+            color: var(--neon-magenta);
+        }
+
+        .character-intro-role {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+            color: #e0e0e0;
+        }
+
+        .character-intro-description {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #c0c0c0;
+        }
+
+        /* Section styling */
+        .story-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 4rem 0;
+            position: relative;
+        }
+
+        .story-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 2rem 0;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .story-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--text-overlay);
+            z-index: -1;
+        }
+
+        .character-name {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--neon-cyan), var(--neon-magenta));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .character-story {
+            font-size: 1.125rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            color: #e0e0e0;
+        }
+
+        .character-emojis {
+            font-size: 2rem;
+            margin: 1rem 0;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .character-emojis span {
+            display: inline-block;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .character-emojis span:hover {
+            transform: scale(1.3) rotate(10deg);
+        }
+
+        /* Special effects for each character */
+        .lightning-section {
+            background: 
+                radial-gradient(circle at 30% 70%, rgba(0, 255, 255, 0.1) 0%, transparent 50%);
+        }
+
+        .fire-section {
+            background: 
+                radial-gradient(circle at 70% 30%, rgba(255, 255, 0, 0.1) 0%, transparent 50%);
+        }
+
+        .phoenix-section {
+            background: 
+                radial-gradient(circle at 50% 50%, rgba(255, 0, 255, 0.1) 0%, transparent 50%);
+        }
+
+        .alliance-section {
+            background: 
+                linear-gradient(45deg, 
+                    rgba(0, 255, 255, 0.05) 0%, 
+                    rgba(255, 0, 255, 0.05) 50%, 
+                    rgba(255, 255, 0, 0.05) 100%);
+        }
+
+        /* Character images */
+        .character-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            object-position: center;
+            border: 4px solid var(--neon-cyan);
+            box-shadow: 
+                0 0 20px var(--neon-cyan),
+                0 0 40px var(--neon-cyan),
+                inset 0 0 20px rgba(0, 255, 255, 0.1);
+            margin: 1rem auto;
+            display: block;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: scale(0.8);
+            cursor: pointer;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .character-image:hover {
+            transform: scale(1.1);
+            box-shadow: 
+                0 0 30px var(--neon-cyan),
+                0 0 60px var(--neon-cyan),
+                inset 0 0 30px rgba(0, 255, 255, 0.2);
+        }
+
+        /* Character name overlay on image */
+        .character-image-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .character-name-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: var(--neon-cyan);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: 900;
+            text-shadow: 0 0 10px var(--neon-cyan);
+            border: 2px solid var(--neon-cyan);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 10;
+            white-space: nowrap;
+        }
+
+        .character-image-container:hover .character-name-overlay {
+            opacity: 1;
+        }
+
+        .lightning-section .character-name-overlay {
+            color: var(--neon-cyan);
+            border-color: var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        .fire-section .character-name-overlay {
+            color: var(--neon-yellow);
+            border-color: var(--neon-yellow);
+            text-shadow: 0 0 10px var(--neon-yellow);
+        }
+
+        .phoenix-section .character-name-overlay {
+            color: var(--neon-magenta);
+            border-color: var(--neon-magenta);
+            text-shadow: 0 0 10px var(--neon-magenta);
+        }
+
+        .lightning-section .character-image {
+            border-color: var(--neon-cyan);
+            box-shadow: 
+                0 0 20px var(--neon-cyan),
+                0 0 40px var(--neon-cyan),
+                inset 0 0 20px rgba(0, 255, 255, 0.1);
+        }
+
+        .fire-section .character-image {
+            border-color: var(--neon-yellow);
+            box-shadow: 
+                0 0 20px var(--neon-yellow),
+                0 0 40px var(--neon-yellow),
+                inset 0 0 20px rgba(255, 255, 0, 0.1);
+        }
+
+        .phoenix-section .character-image {
+            border-color: var(--neon-magenta);
+            box-shadow: 
+                0 0 20px var(--neon-magenta),
+                0 0 40px var(--neon-magenta),
+                inset 0 0 20px rgba(255, 0, 255, 0.1);
+        }
+
+        /* Image container for better layout */
+        .character-content {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .character-text {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .alliance-items {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .alliance-item {
+            font-size: 3rem;
+            opacity: 0;
+            transform: scale(0);
+        }
+
+        /* Ending section */
+        .ending-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: 
+                linear-gradient(135deg, 
+                    rgba(0, 255, 255, 0.1) 0%, 
+                    rgba(255, 0, 255, 0.1) 50%, 
+                    rgba(255, 255, 0, 0.1) 100%);
+            position: relative;
+        }
+
+        .ending-content {
+            max-width: 800px;
+            padding: 3rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .ending-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--text-overlay);
+            z-index: -1;
+            border-radius: 20px;
+        }
+
+        .terminal-text {
+            font-family: 'Courier New', monospace;
+            color: var(--neon-green);
+            font-size: 1.125rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 20px;
+            background: var(--neon-green);
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--neon-cyan);
+            font-size: 2rem;
+            animation: bounce 2s infinite;
+            z-index: 1000;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-10px); }
+            60% { transform: translateX(-50%) translateY(-5px); }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .character-name {
+                font-size: 2rem;
+            }
+            
+            .character-image {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .character-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .story-card {
+                padding: 2rem;
+            }
+            
+            .characters-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .character-intro-image {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .wire-icon {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        /* Glitch effect */
+        .glitch {
+            position: relative;
+            color: white;
+            font-size: 4rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            animation: glitch-skew 1s infinite linear alternate-reverse;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch::before {
+            animation: glitch-anim 0.5s infinite linear alternate-reverse;
+            color: var(--neon-cyan);
+            z-index: -1;
+        }
+
+        .glitch::after {
+            animation: glitch-anim2 1s infinite linear alternate-reverse;
+            color: var(--neon-magenta);
+            z-index: -2;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(42px, 9999px, 44px, 0); }
+            5% { clip: rect(12px, 9999px, 59px, 0); }
+            10% { clip: rect(48px, 9999px, 29px, 0); }
+            15% { clip: rect(42px, 9999px, 73px, 0); }
+            20% { clip: rect(63px, 9999px, 27px, 0); }
+            25% { clip: rect(34px, 9999px, 55px, 0); }
+            30% { clip: rect(86px, 9999px, 73px, 0); }
+            35% { clip: rect(20px, 9999px, 20px, 0); }
+            40% { clip: rect(26px, 9999px, 60px, 0); }
+            45% { clip: rect(25px, 9999px, 66px, 0); }
+            50% { clip: rect(57px, 9999px, 98px, 0); }
+            55% { clip: rect(5px, 9999px, 46px, 0); }
+            60% { clip: rect(82px, 9999px, 31px, 0); }
+            65% { clip: rect(54px, 9999px, 27px, 0); }
+            70% { clip: rect(28px, 9999px, 99px, 0); }
+            75% { clip: rect(45px, 9999px, 69px, 0); }
+            80% { clip: rect(23px, 9999px, 85px, 0); }
+            85% { clip: rect(54px, 9999px, 84px, 0); }
+            90% { clip: rect(45px, 9999px, 47px, 0); }
+            95% { clip: rect(37px, 9999px, 20px, 0); }
+            100% { clip: rect(4px, 9999px, 91px, 0); }
+        }
+
+        @keyframes glitch-anim2 {
+            0% { clip: rect(65px, 9999px, 100px, 0); }
+            5% { clip: rect(52px, 9999px, 74px, 0); }
+            10% { clip: rect(79px, 9999px, 85px, 0); }
+            15% { clip: rect(75px, 9999px, 5px, 0); }
+            20% { clip: rect(67px, 9999px, 61px, 0); }
+            25% { clip: rect(14px, 9999px, 79px, 0); }
+            30% { clip: rect(1px, 9999px, 66px, 0); }
+            35% { clip: rect(86px, 9999px, 30px, 0); }
+            40% { clip: rect(23px, 9999px, 98px, 0); }
+            45% { clip: rect(85px, 9999px, 72px, 0); }
+            50% { clip: rect(71px, 9999px, 75px, 0); }
+            55% { clip: rect(2px, 9999px, 48px, 0); }
+            60% { clip: rect(30px, 9999px, 16px, 0); }
+            65% { clip: rect(59px, 9999px, 50px, 0); }
+            70% { clip: rect(41px, 9999px, 62px, 0); }
+            75% { clip: rect(2px, 9999px, 82px, 0); }
+            80% { clip: rect(47px, 9999px, 73px, 0); }
+            85% { clip: rect(3px, 9999px, 27px, 0); }
+            90% { clip: rect(26px, 9999px, 55px, 0); }
+            95% { clip: rect(42px, 9999px, 97px, 0); }
+            100% { clip: rect(38px, 9999px, 49px, 0); }
+        }
+
+        @keyframes glitch-skew {
+            2% { transform: skew(0.5deg); }
+            4% { transform: skew(-0.8deg); }
+            6% { transform: skew(0.6deg); }
+            8% { transform: skew(-0.3deg); }
+            10% { transform: skew(0.2deg); }
+            12% { transform: skew(-0.4deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Wire frame icons scattered throughout -->
+    <div class="wire-icon wire-bow" style="top: 10%; left: 5%;"></div>
+    <div class="wire-icon wire-ring small" style="top: 20%; right: 10%;"></div>
+    <div class="wire-icon wire-sword large" style="bottom: 15%; left: 8%;"></div>
+    <div class="wire-icon wire-crown" style="top: 30%; left: 15%;"></div>
+    <div class="wire-icon wire-shield" style="top: 60%; right: 20%;"></div>
+    <div class="wire-icon wire-magic" style="bottom: 25%; left: 25%;"></div>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="hero-title glitch" data-text="💍 운정의 반지: 중간계 파주의 전설">💍 운정의 반지: 중간계 파주의 전설</h1>
+            <p class="hero-subtitle">세 명의 용사가 펼치는 장대한 모험의 서막</p>
+        </div>
+        <div class="scroll-indicator">⬇️</div>
+        
+        <!-- More wire icons for hero -->
+        <div class="wire-icon wire-ring" style="top: 15%; right: 15%;"></div>
+        <div class="wire-icon wire-bow small" style="bottom: 20%; right: 25%;"></div>
+    </section>
+
+    <!-- Characters Introduction Section -->
+    <section class="characters-intro">
+        <div class="container">
+            <h2 class="characters-title">등장인물 소개 - 인.창.규</h2>
+            <div class="characters-grid">
+                <div class="character-card">
+                    <img src="pij.JPG" alt="엘프 준골라스" class="character-intro-image elf">
+                    <h3 class="character-intro-name elf">엘프 준골라스 (인준)</h3>
+                    <p class="character-intro-role">🏹 리벤델의 궁수</p>
+                    <p class="character-intro-description">
+                        수천 년의 지혜를 가진 엘프 궁수. 정확무오한 화살 솜씨로 어둠의 세력을 물리친다. 
+                        평소에는 박람회 전시장에서 일하지만, 진정한 정체는 중간계의 수호자.
+                    </p>
+                </div>
+                
+                <div class="character-card">
+                    <img src="lcg.JPG" alt="호빗 찬규" class="character-intro-image hobbit">
+                    <h3 class="character-intro-name hobbit">호빗 찬규 (찬규)</h3>
+                    <p class="character-intro-role">💍 반지 운반자</p>
+                    <p class="character-intro-description">
+                        샤이어 출신의 용감한 호빗. 절대반지의 무거운 짐을 지고 모르도르로 향하는 여정을 떠난다. 
+                        문산 동양화공기계에서 일하며 평범한 삶을 살았지만, 운명은 그를 영웅으로 만들었다.
+                    </p>
+                </div>
+                
+                <div class="character-card">
+                    <img src="ycg.JPG" alt="레인저 아라창" class="character-intro-image ranger">
+                    <h3 class="character-intro-name ranger">레인저 아라창 (창구)</h3>
+                    <p class="character-intro-role">👑 곤도르의 왕</p>
+                    <p class="character-intro-description">
+                        이실두르의 후예이자 곤도르의 정당한 왕위 계승자. 레인저로 살아왔지만 
+                        동료들을 지키기 위해 진정한 왕의 모습을 드러낸다. 용접 기술은 고대 검술로 승화되었다.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- More wire icons -->
+        <div class="wire-icon wire-bow" style="top: 25%; left: 10%;"></div>
+        <div class="wire-icon wire-crown large" style="bottom: 30%; left: 15%;"></div>
+        <div class="wire-icon wire-magic" style="top: 50%; right: 15%;"></div>
+    </section>
+
+    <!-- Chapter 1: 엘프 인준의 각성 -->
+    <section class="story-section lightning-section">
+        <div class="container">
+            <div class="story-card">
+                <div class="character-content">
+                    <div class="character-text">
+                        <h2 class="character-name">🏹 Chapter 1: 엘프 인준의 각성</h2>
+                        <div class="character-story text-overlay">
+                            <p>인준이 눈을 떴을 때, 자신의 일터 박람회 전시장이 아닌 운정호수 근처 숲에서 잠들어 있었다는 걸 깨달았다 🌲. 손에는 평소와 다른 물건이 쥐어져 있었다. 정교하게 만들어진 활과 화살통이었다.</p>
+                            
+                            <p>더 놀라운 건 거울 같은 호수에 비친 자신의 모습이었다. 귀가 뾰족해져 있었고, 머리카락은 은빛으로 변해있었다. 그리고 눈빛은 수천 년의 지혜를 담고 있는 듯 했다 ✨.</p>
+                            
+                            <p>주머니에서 발견한 쪽지에는 엘프 문자로 쓰여진 메시지가 있었다. 신기하게도 읽을 수 있었다.</p>
+                            
+                            <p><strong>"어둠의 세력이 운정을 위협한다. 반지를 찾아 파괴하라. - 갈라드리엘"</strong></p>
+                            
+                            <p>인준은 자신이 리벤델 출신의 엘프 궁수라는 사실을 서서히 기억해냈다. 그의 진짜 이름은 '준골라스'였다.</p>
+                        </div>
+                        <div class="character-emojis">
+                            <span>🏹</span><span>🌲</span><span>✨</span><span>🧝‍♂️</span>
+                        </div>
+                    </div>
+                    <div class="character-image-container">
+                        <img src="pij.JPG" alt="엘프 준골라스" class="character-image">
+                        <div class="character-name-overlay">준골라스</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Wire icons for this section -->
+        <div class="wire-icon wire-bow small" style="top: 10%; right: 5%;"></div>
+        <div class="wire-icon wire-magic" style="bottom: 20%; left: 10%;"></div>
+    </section>
+
+    <!-- Chapter 2: 호빗 찬규의 운명 -->
+    <section class="story-section fire-section">
+        <div class="container">
+            <div class="story-card">
+                <div class="character-content">
+                    <div class="character-text">
+                        <h2 class="character-name">💍 Chapter 2: 호빗 찬규의 운명</h2>
+                        <div class="character-story text-overlay">
+                            <p>찬규는 문산 동양화공기계 사무실이 아닌, 아늑한 호빗굴에서 깨어났다 🏠. 벽면에는 둥근 창문들이 있었고, 테이블 위에는 맛있어 보이는 음식들이 가득했다.</p>
+                            
+                            <p>하지만 그의 시선을 사로잡은 건 탁자 위의 작은 금반지였다. 반지에서는 미약한 빛이 나고 있었고, 가까이 다가가니 속삭이는 듯한 목소리가 들렸다 👁️.</p>
+                            
+                            <p><strong>"내 소중한... 소중이...가 아니고 바..반지!"</strong></p>
+                            
+                            <p>찬규는 순간 모든 걸 기억해냈다. 자신은 샤이어 출신의 호빗이고, 이 반지는... 절대반지였다. 그리고 자신의 사명은 이 반지를 모르도르까지 가져가 파괴하는 것이었다.</p>
+                            
+                            <p>호빗굴 입구에서 검은 망토를 입은 기수들의 말발굽 소리가 들렸다. 나즈굴이었다 🐎.</p>
+                            
+                            <p>찬규는 급히 반지를 주머니에 넣고 뒷문으로 도망쳤다. 목적지는 운정호수 근처에서 만나기로 한 동료들이 있는 곳이었다.</p>
+                        </div>
+                        <div class="character-emojis">
+                            <span>💍</span><span>🏠</span><span>👁️</span><span>🐎</span>
+                        </div>
+                    </div>
+                    <div class="character-image-container">
+                        <img src="lcg.JPG" alt="호빗 찬규" class="character-image">
+                        <div class="character-name-overlay">찬규</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Wire icons for this section -->
+        <div class="wire-icon wire-ring" style="top: 20%; left: 15%;"></div>
+        <div class="wire-icon wire-shield large" style="bottom: 10%; right: 20%;"></div>
+    </section>
+
+    <!-- Chapter 3: 곤도르의 왕 창구 -->
+    <section class="story-section phoenix-section">
+        <div class="container">
+            <div class="story-card">
+                <div class="character-content">
+                    <div class="character-text">
+                        <h2 class="character-name">⚔️ Chapter 3: 곤도르의 왕 창구</h2>
+                        <div class="character-story text-overlay">
+                            <p>창구는 용접 공장이 아닌 파주 한 고대 유적지에서 정신을 차렸다 🏛️. 손에는 용접봉이 아닌 고대의 검이 쥐어져 있었다. 검날에는 엘프 문자로 "아라곤"이라고 새겨져 있었다.</p>
+                            
+                            <p>더 신기한 건 주변에 흩어진 갑옷과 방패들이었다. 모두 곤도르의 문장이 새겨져 있었다. 그리고 자신의 가슴팩에는 "아라창"이라는 이름표가 달려있었다.</p>
+                            
+                            <p>갑자기 머릿속에 기억들이 떠올랐다. 자신은 이실두르의 후예이자, 곤도르의 정당한 왕위 계승자였다. 하지만 지금까지 레인저로 살아왔다 👑.</p>
+                            
+                            <p>파주 시내 쪽에서 검은 연기가 피어오르고 있었다. 오크들이 쳐들어오고 있었던 것이다. 창구는 검을 들고 운정호수로 향했다. 동료들과 만나 반지 원정대를 구성해야 했다.</p>
+                        </div>
+                        <div class="character-emojis">
+                            <span>⚔️</span><span>🏛️</span><span>👑</span><span>🛡️</span>
+                        </div>
+                    </div>
+                    <div class="character-image-container">
+                        <img src="ycg.JPG" alt="레인저 아라창" class="character-image">
+                        <div class="character-name-overlay">아라창</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Wire icons for this section */
+        <div class="wire-icon wire-sword small" style="top: 30%; right: 10%;"></div>
+        <div class="wire-icon wire-crown" style="top: 15%; left: 20%;"></div>
+    </section>
+
+    <!-- Chapter 4: 운정 원정대의 결성 -->
+    <section class="story-section alliance-section">
+        <div class="container">
+            <div class="story-card">
+                <div class="character-content">
+                    <div class="character-text">
+                        <h2 class="character-name">🌟 Chapter 4: 운정 원정대의 결성</h2>
+                        <div class="character-story text-overlay">
+                            <p>세 사람이 운정호수 선착장에서 만났을 때, 그들은 이미 자신들의 정체를 깨닫고 있었다 🤝. 엘프 준골라스, 호빗 찬규, 그리고 곤도르의 왕 아라창.</p>
+                            
+                            <p>갑자기 호수 위에서 빛이 나더니 백색의 마법사가 나타났다. 간달프였다 🧙‍♂️.</p>
+                            
+                            <p><strong>"운정의 용사들이여! 어둠의 세력 사우론이 파주 일대를 장악하려 하고 있다. 절대반지를 모르도르의 운화산에 던져 넣어야만 평화가 온다."</strong></p>
+                            
+                            <p>간달프는 지도를 펼쳤다. 운정에서 시작해서 문산, 파주를 거쳐 DMZ 너머 모르도르까지의 험난한 여정이 그려져 있었다 🗺️.</p>
+                            
+                            <p><strong>"하지만 조심하라. 사루만이 이미 파주 시내에 오크 군대를 배치해놓았다. 그리고 나즈굴들이 너희를 추격하고 있다."</strong></p>
+                            
+                            <p>찬규가 물었다. "우리 셋이서 할 수 있을까요?"</p>
+                            
+                            <p>간달프가 미소지었다. <strong>"걱정 마라. 너희들의 얼굴 어그로라면 오크들도 벌벌떨며 도망갈 것이다..."</strong></p>
+                        </div>
+                        <div class="character-emojis">
+                            <span>🤝</span><span>🧙‍♂️</span><span>🗺️</span><span>⚔️</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="alliance-items">
+                    <div class="alliance-item">🏹</div>
+                    <div class="alliance-item">💍</div>
+                    <div class="alliance-item">⚔️</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Wire icons for this section */
+        <div class="wire-icon wire-magic" style="top: 5%; left: 25%;"></div>
+        <div class="wire-icon wire-shield large" style="bottom: 25%; left: 30%;"></div>
+        <div class="wire-icon wire-bow" style="top: 50%; right: 15%;"></div>
+        <div class="wire-icon wire-ring" style="bottom: 30%; left: 20%;"></div>
+    </section>
+
+    <!-- Chapter 5: 첫 번째 시련 -->
+    <section class="story-section lightning-section">
+        <div class="container">
+            <div class="story-card">
+                <div class="character-content">
+                    <div class="character-text">
+                        <h2 class="character-name">🔥 Chapter 5: 첫 번째 시련</h2>
+                        <div class="character-story text-overlay">
+                            <p>원정대가 문산 쪽으로 향하던 중, 갑자기 하늘이 어두워졌다 ⚡. 나즈굴들이 하늘에서 날아오고 있었다.</p>
+                            
+                            <p><strong>"모두 숨어라!"</strong> 준골라스가 외쳤다.</p>
+                            
+                            <p>하지만 이미 늦었다. 나즈굴들이 땅으로 내려왔고, 찬규를 향해 다가오고 있었다. 반지가 있는 곳을 감지한 것이었다 👁️.</p>
+                            
+                            <p>아라창이 검을 뽑아들었다. <strong>"곤도르를 위하여!"</strong></p>
+                            
+                            <p>준골라스는 활시위를 당겼다. <strong>"엘프의 이름으로!"</strong></p>
+                            
+                            <p>찬규는 반지를 끼려다가 멈췄다. 반지의 유혹을 견뎌야 했다.</p>
+                            
+                            <p>그때 멀리서 폭발음이 들렸다. 간달프가 나타나 불꽃 마법으로 나즈굴들을 물리치고 있었다 💥.</p>
+                            
+                            <p><strong>"어서 가라! 문산까지는 안전하다. 하지만 그 너머는... 모르도르의 영향권이다."</strong></p>
+                        </div>
+                        <div class="character-emojis">
+                            <span>⚡</span><span>👁️</span><span>⚔️</span><span>💥</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Wire icons for this section */
+        <div class="wire-icon wire-sword small" style="top: 40%; left: 5%;"></div>
+        <div class="wire-icon wire-magic" style="bottom: 35%; right: 10%;"></div>
+    </section>
+
+    <!-- Ending Section -->
+    <section class="ending-section">
+        <div class="container">
+            <div class="ending-content">
+                <h2 class="character-name">🏔️ To Be Continued...</h2>
+                <div class="terminal-text" id="typing-text"></div>
+                <span class="cursor"></span>
+            </div>
+        </div>
+        
+        <!-- Final wire icons -->
+        <div class="wire-icon wire-crown large" style="top: 20%; left: 10%;"></div>
+        <div class="wire-icon wire-ring" style="bottom: 20%; right: 15%;"></div>
+        <div class="wire-icon wire-bow" style="top: 30%; right: 25%;"></div>
+        <div class="wire-icon wire-shield" style="bottom: 30%; left: 20%;"></div>
+    </section>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Initialize GSAP and ScrollTrigger
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Initialize animations when page loads
+        window.addEventListener('load', function() {
+            initAnimations();
+            startTypingEffect();
+        });
+
+        function initAnimations() {
+            // Hero title animation
+            gsap.from('.hero-title', {
+                opacity: 0,
+                y: 50,
+                duration: 2,
+                ease: "power2.out"
+            });
+
+            gsap.from('.hero-subtitle', {
+                opacity: 0,
+                y: 30,
+                duration: 1.5,
+                delay: 0.5,
+                ease: "power2.out"
+            });
+
+            // Character cards animation
+            gsap.utils.toArray('.character-card').forEach((card, index) => {
+                gsap.from(card, {
+                    opacity: 0,
+                    y: 100,
+                    duration: 1,
+                    delay: index * 0.2,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: card,
+                        start: "top 80%",
+                        toggleActions: "play none none reverse"
+                    }
+                });
+            });
+
+            // Story sections animation
+            gsap.utils.toArray('.story-card').forEach((card, index) => {
+                gsap.from(card, {
+                    opacity: 0,
+                    x: index % 2 === 0 ? -100 : 100,
+                    duration: 1.5,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: card,
+                        start: "top 80%",
+                        toggleActions: "play none none reverse"
+                    }
+                });
+            });
+
+            // Alliance items animation
+            gsap.utils.toArray('.alliance-item').forEach((item, index) => {
+                gsap.to(item, {
+                    opacity: 1,
+                    scale: 1,
+                    duration: 0.8,
+                    delay: index * 0.3,
+                    ease: "back.out(1.7)",
+                    scrollTrigger: {
+                        trigger: '.alliance-section',
+                        start: "top 60%",
+                        toggleActions: "play none none reverse"
+                    }
+                });
+            });
+
+            // Character images animation
+            gsap.utils.toArray('.character-image').forEach((image, index) => {
+                gsap.to(image, {
+                    opacity: 1,
+                    scale: 1,
+                    duration: 1,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: image,
+                        start: "top 80%",
+                        toggleActions: "play none none reverse"
+                    }
+                });
+            });
+
+            // Character intro images animation
+            gsap.utils.toArray('.character-intro-image').forEach((image, index) => {
+                gsap.from(image, {
+                    opacity: 0,
+                    scale: 0.5,
+                    rotation: 180,
+                    duration: 1,
+                    delay: index * 0.2,
+                    ease: "back.out(1.7)",
+                    scrollTrigger: {
+                        trigger: image,
+                        start: "top 80%",
+                        toggleActions: "play none none reverse"
+                    }
+                });
+            });
+
+            // Wire icons animation
+            gsap.utils.toArray('.wire-icon').forEach((icon, index) => {
+                gsap.from(icon, {
+                    opacity: 0,
+                    scale: 0,
+                    duration: 1,
+                    delay: index * 0.1,
+                    ease: "back.out(1.7)",
+                    scrollTrigger: {
+                        trigger: icon,
+                        start: "top 90%",
+                        toggleActions: "play none none reverse"
+                    }
+                });
+            });
+
+            // Scroll indicator hide
+            ScrollTrigger.create({
+                trigger: '.characters-intro',
+                start: "top 80%",
+                onEnter: () => gsap.to('.scroll-indicator', { opacity: 0, duration: 0.5 }),
+                onLeaveBack: () => gsap.to('.scroll-indicator', { opacity: 1, duration: 0.5 })
+            });
+        }
+
+        function startTypingEffect() {
+            const text = `"운정 반지 원정대: 문산을 넘어 모르도르로"
+
+모르도르까지 남은 거리: 약 50km의 험난한 여정 🗺️
+
+과연 그들은 절대반지를 파괴할 수 있을 것인가? 
+그리고 찬규는 반지의 유혹을 끝까지 견딜 수 있을 것인가?
+
+다음 편에서는 문산의 오크 군대와의 대결, 
+그리고 신비로운 동료들과의 만남이 기다리고 있다!
+
+운정 원정대의 모험은 계속된다...`;
+
+            const typingElement = document.getElementById('typing-text');
+            let i = 0;
+
+            function typeWriter() {
+                if (i < text.length) {
+                    typingElement.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, 50);
+                }
+            }
+
+            // Start typing when ending section is visible
+            ScrollTrigger.create({
+                trigger: '.ending-section',
+                start: "top 80%",
+                onEnter: () => {
+                    setTimeout(typeWriter, 1000);
+                }
+            });
+        }
+
+        // Emoji click effects
+        document.querySelectorAll('.character-emojis span').forEach(emoji => {
+            emoji.addEventListener('click', function() {
+                gsap.to(this, {
+                    scale: 2,
+                    rotation: 720,
+                    duration: 0.5,
+                    ease: "back.out(1.7)",
+                    onComplete: () => {
+                        gsap.to(this, { scale: 1, rotation: 0, duration: 0.3 });
+                    }
+                });
+            });
+        });
+
+        // Character image click effects
+        document.querySelectorAll('.character-image').forEach((image, index) => {
+            image.addEventListener('click', function() {
+                const section = this.closest('.story-section');
+                
+                if (section.classList.contains('lightning-section')) {
+                    // Lightning effect for 인준
+                    gsap.to(this, {
+                        scale: 1.2,
+                        rotation: 360,
+                        duration: 0.8,
+                        ease: "power2.out",
+                        onComplete: () => {
+                            gsap.to(this, { scale: 1, rotation: 0, duration: 0.5 });
+                        }
+                    });
+                    
+                    // Lightning flash effect
+                    const flash = document.createElement('div');
+                    flash.style.cssText = `
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: var(--neon-cyan);
+                        opacity: 0;
+                        pointer-events: none;
+                        z-index: 9999;
+                    `;
+                    document.body.appendChild(flash);
+                    
+                    gsap.to(flash, {
+                        opacity: 0.3,
+                        duration: 0.1,
+                        yoyo: true,
+                        repeat: 3,
+                        onComplete: () => {
+                            document.body.removeChild(flash);
+                        }
+                    });
+                    
+                } else if (section.classList.contains('fire-section')) {
+                    // Fire effect for 창구
+                    gsap.to(this, {
+                        scale: 1.3,
+                        duration: 0.6,
+                        ease: "elastic.out(1, 0.3)",
+                        onComplete: () => {
+                            gsap.to(this, { scale: 1, duration: 0.4 });
+                        }
+                    });
+                    
+                    // Spark particles
+                    for (let i = 0; i < 10; i++) {
+                        const spark = document.createElement('div');
+                        spark.style.cssText = `
+                            position: absolute;
+                            width: 4px;
+                            height: 4px;
+                            background: var(--neon-yellow);
+                            border-radius: 50%;
+                            pointer-events: none;
+                            z-index: 1000;
+                        `;
+                        
+                        const rect = this.getBoundingClientRect();
+                        spark.style.left = (rect.left + rect.width / 2) + 'px';
+                        spark.style.top = (rect.top + rect.height / 2) + 'px';
+                        
+                        document.body.appendChild(spark);
+                        
+                        gsap.to(spark, {
+                            x: (Math.random() - 0.5) * 200,
+                            y: (Math.random() - 0.5) * 200,
+                            opacity: 0,
+                            duration: 1,
+                            ease: "power2.out",
+                            onComplete: () => {
+                                document.body.removeChild(spark);
+                            }
+                        });
+                    }
+                    
+                } else if (section.classList.contains('phoenix-section')) {
+                    // Phoenix effect for 찬규
+                    gsap.to(this, {
+                        scale: 1.1,
+                        rotation: 180,
+                        duration: 1,
+                        ease: "power2.inOut",
+                        onComplete: () => {
+                            gsap.to(this, { scale: 1, rotation: 360, duration: 0.5 });
+                        }
+                    });
+                    
+                    // Phoenix glow effect
+                    const glow = document.createElement('div');
+                    glow.style.cssText = `
+                        position: absolute;
+                        width: 300px;
+                        height: 300px;
+                        background: radial-gradient(circle, rgba(255,0,255,0.6) 0%, transparent 70%);
+                        border-radius: 50%;
+                        pointer-events: none;
+                        z-index: 9999;
+                        transform: translate(-50%, -50%);
+                    `;
+                    
+                    this.parentElement.appendChild(glow);
+                    
+                    gsap.to(glow, {
+                        opacity: 0.5,
+                        scale: 1.5,
+                        duration: 1,
+                        yoyo: true,
+                        repeat: 1,
+                        onComplete: () => {
+                            this.parentElement.removeChild(glow);
+                        }
+                    });
+                }
+            });
+        });
+
+        // Character intro image click effects
+        document.querySelectorAll('.character-intro-image').forEach((image, index) => {
+            image.addEventListener('click', function() {
+                if (this.classList.contains('elf')) {
+                    // Elf magic effect
+                    gsap.to(this, {
+                        scale: 1.2,
+                        rotation: 360,
+                        duration: 1,
+                        ease: "power2.out",
+                        onComplete: () => {
+                            gsap.to(this, { scale: 1, rotation: 0, duration: 0.5 });
+                        }
+                    });
+                } else if (this.classList.contains('hobbit')) {
+                    // Hobbit bounce effect
+                    gsap.to(this, {
+                        scale: 1.3,
+                        y: -20,
+                        duration: 0.3,
+                        ease: "power2.out",
+                        yoyo: true,
+                        repeat: 3,
+                        onComplete: () => {
+                            gsap.to(this, { scale: 1, y: 0, duration: 0.3 });
+                        }
+                    });
+                } else if (this.classList.contains('ranger')) {
+                    // Ranger sword effect
+                    gsap.to(this, {
+                        scale: 1.1,
+                        rotation: 180,
+                        duration: 0.8,
+                        ease: "power2.inOut",
+                        onComplete: () => {
+                            gsap.to(this, { scale: 1, rotation: 360, duration: 0.5 });
+                        }
+                    });
+                }
+            });
+        });
+
+        // Wire icon click effects
+        document.querySelectorAll('.wire-icon').forEach((icon, index) => {
+            icon.addEventListener('click', function() {
+                gsap.to(this, {
+                    scale: 1.5,
+                    rotation: 720,
+                    duration: 1,
+                    ease: "back.out(1.7)",
+                    onComplete: () => {
+                        gsap.to(this, { scale: 1, rotation: 0, duration: 0.5 });
+                    }
+                });
+            });
+        });
+
+        // Konami code easter egg
+        let konamiCode = [];
+        const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
+        
+        document.addEventListener('keydown', function(e) {
+            konamiCode.push(e.code);
+            if (konamiCode.length > konamiSequence.length) {
+                konamiCode.shift();
+            }
+            
+            if (JSON.stringify(konamiCode) === JSON.stringify(konamiSequence)) {
+                // Ring of Power effect
+                document.body.style.animation = 'ringPower 3s infinite';
+                setTimeout(() => {
+                    document.body.style.animation = '';
+                }, 3000);
+            }
+        });
+
+        // Ring of Power effect keyframes
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ringPower {
+                0% { filter: hue-rotate(0deg) contrast(1) brightness(1); }
+                25% { filter: hue-rotate(90deg) contrast(1.5) brightness(1.2); }
+                50% { filter: hue-rotate(180deg) contrast(2) brightness(1.5); }
+                75% { filter: hue-rotate(270deg) contrast(1.5) brightness(1.2); }
+                100% { filter: hue-rotate(360deg) contrast(1) brightness(1); }
+            }
+            @keyframes pulse {
+                0%, 100% { opacity: 0.5; transform: scale(1); }
+                50% { opacity: 1; transform: scale(1.1); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html> 
